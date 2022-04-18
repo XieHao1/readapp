@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xh.readapp.dao.UserDao">
+
+    <resultMap id="BaseResultMap" type="com.xh.readapp.domain.User">
+            <id property="userId" column="user_id" jdbcType="VARCHAR"/>
+            <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+            <result property="gender" column="gender" jdbcType="INTEGER"/>
+            <result property="language" column="language" jdbcType="VARCHAR"/>
+            <result property="province" column="province" jdbcType="VARCHAR"/>
+            <result property="avatarUrl" column="avatar_url" jdbcType="VARCHAR"/>
+            <result property="isShop" column="is_shop" jdbcType="INTEGER"/>
+            <result property="createDate" column="create_date" jdbcType="VARCHAR"/>
+            <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+            <result property="lastLogin" column="last_login" jdbcType="VARCHAR"/>
+            <result property="school" column="school" jdbcType="VARCHAR"/>
+            <result property="attentionCounts" column="attention_counts" jdbcType="INTEGER"/>
+            <result property="fansCounts" column="fans_counts" jdbcType="INTEGER"/>
+            <result property="birthday" column="birthday" jdbcType="VARCHAR"/>
+            <result property="background" column="background" jdbcType="VARCHAR"/>
+            <result property="introduction" column="introduction" jdbcType="VARCHAR"/>
+    </resultMap>
+
+</mapper>

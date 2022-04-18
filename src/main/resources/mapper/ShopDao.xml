@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xh.readapp.dao.ShopDao">
+
+    <resultMap id="BaseResultMap" type="com.xh.readapp.domain.Shop">
+            <id property="userShopId" column="user_shop_id" jdbcType="VARCHAR"/>
+            <result property="label" column="label" jdbcType="VARCHAR"/>
+    </resultMap>
+
+</mapper>
