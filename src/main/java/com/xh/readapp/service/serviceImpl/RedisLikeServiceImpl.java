@@ -2,6 +2,7 @@ package com.xh.readapp.service.serviceImpl;
 
 import com.xh.readapp.dictionary.LikedStatusEnum;
 import com.xh.readapp.domain.ArticleLike;
+import com.xh.readapp.service.ArticleLikeService;
 import com.xh.readapp.service.ArticleService;
 import com.xh.readapp.service.RedisLikeService;
 import com.xh.readapp.util.RedisLikeKeyUtils;
@@ -29,17 +30,32 @@ public class RedisLikeServiceImpl implements RedisLikeService {
     @Lazy
     private ArticleService articleService;
 
+    @Autowired
+    @Lazy
+    private ArticleLikeService articleLikeService;
+
     private static final String MAP_KEY_ARTICLE_LIKED_COUNT = RedisLikeKeyUtils.MAP_KEY_ARTICLE_LIKED_COUNT;
     private static final String MAP_KEY_USER_LIKED = RedisLikeKeyUtils.MAP_KEY_USER_LIKED;
 
 
     @Override
-    public void createRedisKey(String articleId) {
-        Boolean hasKey = redisTemplate.opsForHash().hasKey(MAP_KEY_ARTICLE_LIKED_COUNT, articleId);
-        if(!hasKey){
+    public void createRedisKey(String articleId,String userId) {
+        Boolean articleHasKey = redisTemplate.opsForHash().hasKey(MAP_KEY_ARTICLE_LIKED_COUNT,articleId);
+
+        String likedKey = RedisLikeKeyUtils.getLikedKey(userId, articleId);
+        Boolean userHasKey = redisTemplate.opsForHash().hasKey(MAP_KEY_USER_LIKED,likedKey);
+
+        if(!articleHasKey){
             Integer likeCounts = articleService.getLikeCounts(articleId);
             redisTemplate.opsForHash().put(MAP_KEY_ARTICLE_LIKED_COUNT,articleId,String.valueOf(likeCounts));
         }
+
+        if(!userHasKey){
+            //获取文章的点赞状态
+            Integer status = articleLikeService.getStatus(articleId, userId);
+            redisTemplate.opsForHash().put(MAP_KEY_USER_LIKED,likedKey,String.valueOf(status));
+        }
+
         log.info("缓存点赞数key:{},map_key:{}",MAP_KEY_ARTICLE_LIKED_COUNT,articleId);
     }
 
@@ -70,7 +86,7 @@ public class RedisLikeServiceImpl implements RedisLikeService {
     @Override
     public Integer getStatus(String articleId, String userId) {
         String likedKey = RedisLikeKeyUtils.getLikedKey(userId,articleId);
-        Object o = redisTemplate.opsForHash().get(MAP_KEY_USER_LIKED, likedKey);
+        Object o = redisTemplate.opsForHash().get(MAP_KEY_USER_LIKED,likedKey);
         if(o == null){
             return -1;
         }

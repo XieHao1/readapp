@@ -30,7 +30,7 @@ public class ArticleLikeServiceImpl implements ArticleLikeService {
 
     @Override
     @Transactional
-    public Integer getStatus(String articleId, String userId) {
+    public synchronized Integer getStatus(String articleId, String userId) {
         LambdaQueryWrapper<ArticleLike> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.select(ArticleLike::getStatus);
         lambdaQueryWrapper.eq(ArticleLike::getArticleId,articleId).eq(ArticleLike::getUserId,userId);

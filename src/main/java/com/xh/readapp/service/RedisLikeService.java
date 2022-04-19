@@ -10,8 +10,9 @@ public interface RedisLikeService {
     /**
      * 若redis中没有点赞数key,则创建
      * @param articleId 文章的id
+     * @param userId 用户的id
      */
-    void createRedisKey(String articleId);
+    void createRedisKey(String articleId,String userId);
 
     /**
      * 将用户点赞的状态保存到redis中
@@ -32,6 +33,7 @@ public interface RedisLikeService {
      * @param articleId 文章id
      * @return 点赞后的数据
      */
+
     Integer like(String articleId);
 
     /**

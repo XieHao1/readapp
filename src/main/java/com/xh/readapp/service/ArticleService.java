@@ -1,6 +1,5 @@
 package com.xh.readapp.service;
 
-import com.xh.readapp.domain.ArticleLike;
 import com.xh.readapp.util.ResultJson;
 import com.xh.readapp.vo.articles.PageParams;
 import com.xh.readapp.vo.articles.ArticlePageParams;

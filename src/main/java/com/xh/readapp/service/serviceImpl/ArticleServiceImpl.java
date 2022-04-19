@@ -88,22 +88,24 @@ public class ArticleServiceImpl implements ArticleService {
     @Transactional
     public ResultJson likeArticle(String articleId) {
         String userId = ThreadLocalUtil.getThread();
-        redisLikeService.createRedisKey(articleId);
+        redisLikeService.createRedisKey(articleId,userId);
+
         //获取用户点赞状态
         Integer status = getStatus(articleId,userId);
 
         if(status == 1){
-            return ResultJson.fail(ErrorEnum.ALREADY_LIKE_COUNTS_ERROR.getCode(),
-                    ErrorEnum.ALREADY_LIKE_COUNTS_ERROR.getMsg());
+            return ResultJson.fail(ErrorEnum.ALREADY_LIKE_COUNTS_ERROR.getCode(),ErrorEnum.ALREADY_LIKE_COUNTS_ERROR.getMsg());
         }
+
         //点赞
         Integer increment = redisLikeService.like(articleId);
+
         //保存用户的点赞状态
         redisLikeService.save(articleId,userId);
 
         Map<String,Integer> map = new HashMap<>();
         map.put("likeCounts",increment);
-        map.put("status",1);
+        map.put("status",getStatus(articleId,userId));
         return ResultJson.success(map);
     }
 
@@ -111,7 +113,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Transactional
     public ResultJson unLikeArticle(String articleId) {
         String userId = ThreadLocalUtil.getThread();
-        redisLikeService.createRedisKey(articleId);
+        redisLikeService.createRedisKey(articleId,userId);
         //获取用户点赞状态
         Integer status = getStatus(articleId,userId);
         if(status == 0){
@@ -124,7 +126,7 @@ public class ArticleServiceImpl implements ArticleService {
         redisLikeService.nuSave(articleId,userId);
         Map<String,Integer> map = new HashMap<>();
         map.put("likeCounts",decrement);
-        map.put("status",0);
+        map.put("status",getStatus(articleId,userId));
         return ResultJson.success(map);
     }
 
@@ -299,7 +301,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     private Integer getStatus(String articleId, String userId) {
         //先从redis中获取
-        Integer status = redisLikeService.getStatus(articleId, userId);
+        Integer status = redisLikeService.getStatus(articleId,userId);
         if(status == null || status != -1){
             return status;
         }
@@ -307,7 +309,6 @@ public class ArticleServiceImpl implements ArticleService {
         status = articleLikeService.getStatus(articleId,userId);
         return status;
     }
-
 
 
     private List<ArticleVo> copyList(List<Article> articles,boolean isUser,boolean isStatus) {
