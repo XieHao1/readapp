@@ -23,6 +23,7 @@ public class ArticleVo implements Serializable {
     private String label;
 
     private String content;
+    private String contentHtml;
 
     private List<Tag> tags;
 

@@ -31,16 +31,33 @@ public class ArticleLikeServiceImpl implements ArticleLikeService {
     @Override
     @Transactional
     public synchronized Integer getStatus(String articleId, String userId) {
+        ArticleLike articleLike = null;
         LambdaQueryWrapper<ArticleLike> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.select(ArticleLike::getStatus);
+        lambdaQueryWrapper.select(ArticleLike::getStatus,ArticleLike::getArticleLikeId);
         lambdaQueryWrapper.eq(ArticleLike::getArticleId,articleId).eq(ArticleLike::getUserId,userId);
-        ArticleLike articleLike = articleLikeDao.selectOne(lambdaQueryWrapper);
-        if(articleLike == null){
+        List<ArticleLike> likeList = articleLikeDao.selectList(lambdaQueryWrapper);
+
+
+        if(likeList.size()==0){
             insertArticleLike(articleId,userId);
             return 0;
         }
-        return articleLike.getStatus();
 
+        if(likeList.size()>1){
+           for (int i = 0;i <= likeList.size()-2;i++){
+               deleteArticleLike(likeList.get(i).getArticleLikeId());
+           }
+            articleLike = articleLikeDao.selectOne(lambdaQueryWrapper);
+        }else {
+            articleLike = likeList.get(0);
+        }
+        return articleLike.getStatus();
+    }
+
+    private void deleteArticleLike(String articleLikeId) {
+        LambdaQueryWrapper<ArticleLike> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(ArticleLike::getArticleLikeId,articleLikeId);
+        articleLikeDao.delete(lambdaQueryWrapper);
     }
 
     @Override

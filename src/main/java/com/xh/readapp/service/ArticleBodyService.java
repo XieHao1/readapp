@@ -9,7 +9,7 @@ public interface ArticleBodyService {
      * @param articleId 文章的id
      * @return 文章的内容
      */
-    String findArticleContentByArticleId(String articleId);
+    ArticleBody findArticleContentByArticleId(String articleId);
 
     /**
      * 添加文章内容

@@ -15,12 +15,11 @@ public class ArticleBodyServiceImpl implements ArticleBodyService {
     private ArticleBodyDao articleBodyDao;
 
     @Override
-    public String findArticleContentByArticleId(String articleId) {
+    public ArticleBody findArticleContentByArticleId(String articleId) {
         LambdaQueryWrapper<ArticleBody> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(ArticleBody::getArticleId,articleId);
-        lambdaQueryWrapper.select(ArticleBody::getContent);
-        ArticleBody articleBody = articleBodyDao.selectOne(lambdaQueryWrapper);
-        return articleBody.getContent();
+        lambdaQueryWrapper.select(ArticleBody::getContent,ArticleBody::getContentHtml);
+        return articleBodyDao.selectOne(lambdaQueryWrapper);
     }
 
     @Override

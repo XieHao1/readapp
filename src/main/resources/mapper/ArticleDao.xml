@@ -43,13 +43,12 @@
     </select>
 
     <select id="findArticleByArticleName" resultType="com.xh.readapp.domain.Article">
-        select distinct article.article_id,comment_counts,create_date,title,view_counts,user_id,
-               article.body_id,category_id,like_counts
-        from article,article_body
-        where article.article_id = article_body.article_id
-        and title like '%' #{articleName} '%'
-        or content like '%' #{articleName} '%'
-        group by article.article_id,create_date
+        select distinct article_id,comment_counts,create_date,title,view_counts,user_id,body_id,category_id,like_counts
+        from article
+        where title like '%' #{articleName} '%'
+        <!--or content like '%' #{articleName} '%'-->
+        <!--or content_html like '%' #{articleName} '%'-->
+        group by create_date,article.article_id
         order by create_date desc
     </select>
 

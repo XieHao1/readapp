@@ -346,7 +346,7 @@ public class ArticleServiceImpl implements ArticleService {
             article.setLikeCounts(likeCounts);
         }
 
-        String content = articleBodyService.findArticleContentByArticleId(articleId);
+        ArticleBody articleBody = articleBodyService.findArticleContentByArticleId(articleId);
 
         List<Tag> tags = articleTagService.findArticleTagsByArticleId(articleId);
 
@@ -355,7 +355,8 @@ public class ArticleServiceImpl implements ArticleService {
         BeanUtils.copyProperties(article,articleVo);
         articleVo.setStatus(status);
         articleVo.setLabel(label);
-        articleVo.setContent(content);
+        articleVo.setContent(articleBody.getContent());
+        articleVo.setContentHtml(articleBody.getContentHtml());
         articleVo.setTags(tags);
         articleVo.setCategory(category);
         return articleVo;
