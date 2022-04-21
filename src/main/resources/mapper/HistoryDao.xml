@@ -34,10 +34,10 @@
     </select>
 
     <select id="leaderboard" resultType="com.xh.readapp.vo.History.LeaderboardVo">
-        select history.user_id as userId,avatar_url as avatarUrl,nickname,school,round(sum(reading_time)/60 ) as totalReadingTime,province
+        select user.user_id as userId,avatar_url as avatarUrl,nickname,school,round(sum(reading_time)/60 ) as totalReadingTime,province
         from user,history
         where user.user_id = history.user_id
-        group by history.user_id
+        group by user.user_id
         order by totalReadingTime desc
         limit 10
     </select>

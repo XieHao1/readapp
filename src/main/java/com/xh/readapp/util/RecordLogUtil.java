@@ -12,7 +12,9 @@ public class RecordLogUtil {
     public static void recordLog(JoinPoint joinPoint, long time) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         log.info("======================log start==================");
-
+        //获取时间
+        String nowTime = TimeUtil.getStringTime();
+        log.info("时间:{}",nowTime);
         //请求的方法名
         String className = joinPoint.getTarget().getClass().getName();
         String methodName = signature.getName();
@@ -31,5 +33,7 @@ public class RecordLogUtil {
 
         log.info("方法消耗时间 time : {} ms",time);
         log.info("=====================log end====================");
+        log.info("");
+        log.info("");
     }
 }
