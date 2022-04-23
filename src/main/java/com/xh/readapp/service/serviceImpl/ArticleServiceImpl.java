@@ -54,6 +54,9 @@ public class ArticleServiceImpl implements ArticleService {
     @Autowired
     private RedisLikeService redisLikeService;
 
+    @Autowired
+    private FocusService focusService;
+
     @Override
     public ResultJson findAllArticles(PageParams pageParams) {
         IPage<Article> iPage = new Page<>(pageParams.getPage(), pageParams.getPageSize());
@@ -64,7 +67,7 @@ public class ArticleServiceImpl implements ArticleService {
             return ResultJson.success(null);
         }
         List<Article> records = iPage1.getRecords();
-        List<ArticleVo> articleVoList = copyList(records,true,true);
+        List<ArticleVo> articleVoList = copyList(records,true,true,true);
         ArticlePagesVo articlePagesVo = new ArticlePagesVo();
         articlePagesVo.setPages(pages);
         articlePagesVo.setArticles(articleVoList);
@@ -81,7 +84,7 @@ public class ArticleServiceImpl implements ArticleService {
         if(isUpdateViewCounts){
             threadService.updateArticleViewCounts(article);
         }
-        return ResultJson.success(copy(article,true,true));
+        return ResultJson.success(copy(article,true,true,true));
     }
 
     @Override
@@ -165,7 +168,7 @@ public class ArticleServiceImpl implements ArticleService {
             return ResultJson.success(null);
         }
         List<Article> articleTitle = articleByArticleTitle.getRecords();
-        List<ArticleVo> articleTitleVoList = copyList(articleTitle, true, true);
+        List<ArticleVo> articleTitleVoList = copyList(articleTitle, true,true,true);
 
         return ResultJson.success(articleTitleVoList);
     }
@@ -235,7 +238,7 @@ public class ArticleServiceImpl implements ArticleService {
             return ResultJson.success(null);
         }
         List<Article> articles = page1.getRecords();
-        List<ArticleVo> articleVoList = copyList(articles,false,true);
+        List<ArticleVo> articleVoList = copyList(articles,false,true,false);
         ArticlePagesVo articlePagesVo = new ArticlePagesVo();
         articlePagesVo.setPages(pages);
         articlePagesVo.setArticles(articleVoList);
@@ -292,7 +295,7 @@ public class ArticleServiceImpl implements ArticleService {
             return ResultJson.success(null);
         }
         List<Article> articles = page1.getRecords();
-        List<ArticleVo> articleVoList = copyList(articles, true,true);
+        List<ArticleVo> articleVoList = copyList(articles, true,true,true);
         ArticlePagesVo articlePagesVo = new ArticlePagesVo();
         articlePagesVo.setArticles(articleVoList);
         articlePagesVo.setPages(pages);
@@ -311,19 +314,20 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
 
-    private List<ArticleVo> copyList(List<Article> articles,boolean isUser,boolean isStatus) {
+    private List<ArticleVo> copyList(List<Article> articles,boolean isUser,boolean isStatus,boolean isFocus) {
         List<ArticleVo> articleVoList = new ArrayList<>();
-        articles.forEach(article -> articleVoList.add(copy(article,isUser,isStatus)));
+        articles.forEach(article -> articleVoList.add(copy(article,isUser,isStatus,isFocus)));
         return articleVoList;
     }
 
-    private ArticleVo copy(Article article,boolean isUser,boolean isStatus) {
+    private ArticleVo copy(Article article,boolean isUser,boolean isStatus,boolean isFocus) {
         ArticleVo articleVo = new ArticleVo();
         String userId = article.getUserId();
         String articleId = article.getArticleId();
         String categoryId = article.getCategoryId();
         Integer status = 0;
         Integer likeCounts = 0;
+        Integer focus = 0;
         String label = "";
 
         if(isUser){
@@ -352,7 +356,20 @@ public class ArticleServiceImpl implements ArticleService {
 
         Category category = categoryService.findArticleCategoryByArticleId(categoryId);
 
+        if(isFocus){
+            //如果是自己的文章，则不显示关注
+            String myUserId = ThreadLocalUtil.getThread();
+            if(userId.equals(myUserId)){
+                focus = null;
+                //若干不是自己的文章,则查询是否关注
+            }else {
+                //0表示未关注，1表示关注
+                focus = focusService.getIsFocus(myUserId,userId);
+            }
+        }
+
         BeanUtils.copyProperties(article,articleVo);
+        articleVo.setFocus(focus);
         articleVo.setStatus(status);
         articleVo.setLabel(label);
         articleVo.setContent(articleBody.getContent());

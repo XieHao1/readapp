@@ -1,5 +1,6 @@
 package com.xh.readapp.Controller;
 
+import com.xh.readapp.common.Cache;
 import com.xh.readapp.common.NoticeUpdateCache;
 import com.xh.readapp.service.FocusService;
 import com.xh.readapp.util.ResultJson;
@@ -26,7 +27,8 @@ public class FocusController {
     }
 
     @PostMapping("/getAttention")
-    public ResultJson getAttention(){
-        return focusService.getAttentionData();
+    @Cache(name = "个人资料关注列表")
+    public ResultJson getAttention(String userId){
+        return focusService.getAttentionData(userId);
     }
 }

@@ -19,7 +19,16 @@ public interface FocusService {
 
     /**
      * 获取关注列表
+     * @param userId 用户的id
      * @return 关注列表信息
      */
-    ResultJson getAttentionData();
+    ResultJson getAttentionData(String userId);
+
+    /**
+     * 查看是是否关注
+     * @param myUserId 自己的id
+     * @param toUserId 关注的id
+     * @return 0 表示未关注，1表示关注
+     */
+    Integer getIsFocus(String myUserId,String toUserId);
 }

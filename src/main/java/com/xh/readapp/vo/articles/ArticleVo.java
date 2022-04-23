@@ -17,6 +17,9 @@ public class ArticleVo implements Serializable {
     private Integer likeCounts;
     private String createDate;
 
+    //用户是否关注
+    private Integer focus;
+
     private String nickname;
     private String avatarUrl;
 

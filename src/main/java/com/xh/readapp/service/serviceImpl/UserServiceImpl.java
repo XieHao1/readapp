@@ -183,6 +183,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserVo> findAttentionData(List<String> list) {
         LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        if(list.size() == 0){
+            return null;
+        }
         lambdaQueryWrapper.in(User::getUserId,list);
         List<User> users = userDao.selectList(lambdaQueryWrapper);
         List<UserVo> userVoList = new ArrayList<>();

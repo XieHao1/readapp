@@ -6,6 +6,7 @@ import com.xh.readapp.dictionary.ErrorEnum;
 import com.xh.readapp.domain.Focus;
 import com.xh.readapp.service.FocusService;
 import com.xh.readapp.service.ThreadService;
+import com.xh.readapp.service.UpdateCacheService;
 import com.xh.readapp.service.UserService;
 import com.xh.readapp.util.ResultJson;
 import com.xh.readapp.util.ThreadLocalUtil;
@@ -31,6 +32,9 @@ public class FocusServiceImpl implements FocusService {
     @Autowired
     private ThreadService threadService;
 
+    @Autowired
+    private UpdateCacheService updateCacheService;
+
     @Override
     @Transactional
     public ResultJson insertFocus(String toUserId) {
@@ -51,6 +55,8 @@ public class FocusServiceImpl implements FocusService {
         }
         //在另一个线程中更新用户的关注数和粉丝数
         threadService.updateUserFocus(userId,toUserId);
+        //删除文章缓存
+        updateCacheService.deleteArticleCache();
         return ResultJson.success(null);
     }
 
@@ -58,6 +64,11 @@ public class FocusServiceImpl implements FocusService {
     @Transactional
     public ResultJson deleteFocus(String toUserId) {
         String userId = ThreadLocalUtil.getThread();
+        //先判段是否关注
+        boolean focus = isFocus(userId, toUserId);
+        if(!focus){
+            return ResultJson.fail(ErrorEnum.DELETE_FOCUS_ERROR.getCode(), ErrorEnum.DELETE_FOCUS_ERROR.getMsg()+",还未关注该用户");
+        }
         LambdaQueryWrapper<Focus> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(Focus::getToUserId,toUserId);
         lambdaQueryWrapper.eq(Focus::getUserId,userId);
@@ -67,13 +78,14 @@ public class FocusServiceImpl implements FocusService {
         }
         //在另一个线程中更新用户的关注数和粉丝数
         threadService.updateUserFocus(userId,toUserId);
+        //删除文章缓存
+        updateCacheService.deleteArticleCache();
         return ResultJson.success(null);
     }
 
     @Override
     @Transactional
-    public ResultJson getAttentionData() {
-        String userId = ThreadLocalUtil.getThread();
+    public ResultJson getAttentionData(String userId) {
         LambdaQueryWrapper<Focus> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(Focus::getUserId,userId);
         List<Focus> foci = focusDao.selectList(lambdaQueryWrapper);
@@ -83,11 +95,17 @@ public class FocusServiceImpl implements FocusService {
         return ResultJson.success(userVoList);
     }
 
+    @Override
+    public Integer getIsFocus(String myUserId,String toUSerId) {
+        boolean focus = isFocus(myUserId, toUSerId);
+        return focus ? 1 : 0;
+    }
+
     private boolean isFocus(String userId,String toUserId){
         LambdaQueryWrapper<Focus> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(Focus::getUserId,userId);
         lambdaQueryWrapper.eq(Focus::getToUserId,toUserId);
-        Integer i = focusDao.selectCount(lambdaQueryWrapper).intValue();
+        int i = focusDao.selectCount(lambdaQueryWrapper).intValue();
         return i >= 1;
     }
 
