@@ -31,8 +31,8 @@ public class RabbitMQConfig {
         return new Queue(HISTORY_QUEUE_NAME,true,false,false);
     }
     @Bean
-    public Binding historyQueueToAppExchange(Queue commentQueue,DirectExchange readAppExchange){
-        return BindingBuilder.bind(commentQueue).to(readAppExchange).with(HISTORY_ROUTING_KEY);
+    public Binding historyQueueToAppExchange(Queue historyQueue,DirectExchange readAppExchange){
+        return BindingBuilder.bind(historyQueue).to(readAppExchange).with(HISTORY_ROUTING_KEY);
     }
 
     @Bean
