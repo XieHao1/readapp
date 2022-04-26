@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
         }
         //若有，则生成token,并且保存在redis中
         String token = new JWTUtil().getToken(openId);
-        redisTemplate.opsForValue().set(REDIS_TOKEN_KEY_PREFIX+token,JSON.toJSONString(user),1,TimeUnit.DAYS);
+        redisTemplate.opsForValue().set(REDIS_TOKEN_KEY_PREFIX+token,JSON.toJSONString(user),7,TimeUnit.DAYS);
         Map<String,String> map = new HashMap<>();
         map.put("token",token);
         return ResultJson.success(map);

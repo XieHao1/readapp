@@ -13,7 +13,7 @@ public class JWTUtil {
     private final static String tokenSecret = "asFAsfasgagshdbAWFASVS";
 
     //token的过期时间（天）
-    private static final int TIME = 1;
+    private static final int TIME = 7;
 
     /**
      * 生成token

@@ -71,7 +71,6 @@ public class ArticleServiceImpl implements ArticleService {
         ArticlePagesVo articlePagesVo = new ArticlePagesVo();
         articlePagesVo.setPages(pages);
         articlePagesVo.setArticles(articleVoList);
-
         return ResultJson.success(articlePagesVo);
     }
 
