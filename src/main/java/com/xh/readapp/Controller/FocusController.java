@@ -31,4 +31,10 @@ public class FocusController {
     public ResultJson getAttention(String userId){
         return focusService.getAttentionData(userId);
     }
+
+    @PostMapping("/getFocus")
+    @Cache(name = "个人资料粉丝列表")
+    public ResultJson getFocus(String userId){
+        return focusService.getFocus(userId);
+    }
 }

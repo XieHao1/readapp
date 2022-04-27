@@ -101,6 +101,17 @@ public class FocusServiceImpl implements FocusService {
         return focus ? 1 : 0;
     }
 
+    @Override
+    public ResultJson getFocus(String userId) {
+        LambdaQueryWrapper<Focus> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(Focus::getToUserId,userId);
+        List<Focus> foci = focusDao.selectList(lambdaQueryWrapper);
+        List<String> list = new ArrayList<>();
+        foci.forEach(focus -> list.add(focus.getUserId()));
+        List<UserVo> userVoList = userService.findAttentionData(list);
+        return ResultJson.success(userVoList);
+    }
+
     private boolean isFocus(String userId,String toUserId){
         LambdaQueryWrapper<Focus> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(Focus::getUserId,userId);

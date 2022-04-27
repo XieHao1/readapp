@@ -31,4 +31,11 @@ public interface FocusService {
      * @return 0 表示未关注，1表示关注
      */
     Integer getIsFocus(String myUserId,String toUserId);
+
+    /**
+     * 获取用户的粉丝列表
+     * @param userId 用户的id
+     * @return 粉丝列表
+     */
+    ResultJson getFocus(String userId);
 }
