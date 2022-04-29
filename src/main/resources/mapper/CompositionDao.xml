@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xh.readapp.dao.CompositionDao">
+
+    <resultMap id="BaseResultMap" type="com.xh.readapp.domain.Composition">
+            <id property="compositionId" column="composition_id" jdbcType="INTEGER"/>
+            <result property="title" column="title" jdbcType="VARCHAR"/>
+            <result property="describe" column="describe" jdbcType="VARCHAR"/>
+            <result property="topicId" column="topic_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="getComposition" resultType="com.xh.readapp.domain.Composition">
+        select * from composition
+        where topic_id = #{topicId}
+    </select>
+</mapper>
