@@ -143,6 +143,9 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public void updateArticleLikeCounts(List<LikeCountsVo> articleLikeCounts) {
         LambdaQueryWrapper<Article> lambdaQueryWrapper;
+        if (articleLikeCounts.size() == 0){
+            return;
+        }
         for (LikeCountsVo likeCountsVo : articleLikeCounts){
             lambdaQueryWrapper = new LambdaQueryWrapper<>();
             lambdaQueryWrapper.eq(Article::getArticleId,likeCountsVo.getArticleId());

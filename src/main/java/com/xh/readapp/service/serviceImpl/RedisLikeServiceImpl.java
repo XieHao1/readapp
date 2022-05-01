@@ -138,7 +138,7 @@ public class RedisLikeServiceImpl implements RedisLikeService {
     public Integer getLikeCountsByRedis(String articleId) {
         Object o = redisTemplate.opsForHash().get(MAP_KEY_ARTICLE_LIKED_COUNT, articleId);
         if(o == null) return null;
-        return Integer.parseInt(o.toString());
+        return Integer.parseInt(o.toString().trim());
     }
 
 }

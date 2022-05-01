@@ -74,6 +74,9 @@ public class ArticleLikeServiceImpl implements ArticleLikeService {
     @Transactional
     public void transLikedFromRedis() {
         List<ArticleLike> articleLikeStatusByRedis = redisLikeService.getArticleLikeStatusByRedis();
+        if (articleLikeStatusByRedis.size() == 0){
+            return;
+        }
         LambdaQueryWrapper<ArticleLike> lambdaQueryWrapper;
         for (ArticleLike articleLike : articleLikeStatusByRedis){
             lambdaQueryWrapper = new LambdaQueryWrapper<>();

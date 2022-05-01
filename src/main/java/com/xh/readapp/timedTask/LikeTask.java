@@ -29,11 +29,12 @@ public class LikeTask extends QuartzJobBean {
     @Override
     @Transactional
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+
         articleLikeService.transLikedFromRedis();
-        redisLikeService.deleteMapArticleLikedCount();
+        redisLikeService.deleteMapUserLiked();
 
         articleLikeService.transLikedCountFromRedis();
-        redisLikeService.deleteMapUserLiked();
+        redisLikeService.deleteMapArticleLikedCount();
 
         log.info("LikeTask-------- {}", dtf.format(LocalDateTime.now()));
     }
